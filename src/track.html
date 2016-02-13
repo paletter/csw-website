@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- CSS -->
+    <link href="js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <!--<link href="js/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>-->
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+
+    <!-- JS -->
+    <script type="text/javascript" src="js/lib/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-controller="indexCtrl">
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" class="img-responsive" alt="" /></a>
+            </div>
+            <div class="header-right">
+                <h4><i class="phone"></i>(256) 152 3658</h4>
+                <span class="menu"></span>
+                <div class="top-menu">
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a class="active" href="track.html">包裹追踪</a></li>
+                    </ul>
+                </div>
+                <!-- script for menu -->
+                <script>
+                    $( "span.menu" ).click(function() {
+                        $( ".top-menu" ).slideToggle( "slow", function() {
+                            // Animation complete.
+                        });
+                    });
+                </script>
+                <!-- script for menu -->
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="contact about-desc">
+            <h3>包裹追踪</h3>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="contact_right">
+                            <div class="contact-form_grid">
+                                <input type="text" class="textbox" placeholder="请输入关联号码" ng-model="referenceNo" id="referenceNo">
+                                <input type="button" value="查询" ng-click="queryPieces();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 contact_left" ng-show="isNothing">
+                        <div class="contact_grid contact_address">
+                            <h5>很抱歉，没有查到相关信息</h5>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 contact_left" ng-show="piecesResultVo.referenceNo">
+                        <div class="contact_grid contact_address">
+                            <p>收货人 : {{piecesResultVo.consigneeName}}</p>
+                            <p>收货地址 : {{piecesResultVo.consigneeChineseFullAddress}}</p>
+                            <p>国内快递公司 : {{piecesResultVo.deliveryName}}</p>
+                            <p>国内快递单号 : {{piecesResultVo.deliveryNo}}</p>
+                        </div>
+                        <div class="contact_grid contact_address">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>处理时间</th>
+                                        <th>处理信息</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="piecesHistory in piecesResultVo.piecesHistoryVoList">
+                                        <td>{{piecesHistory.actionDateTime}}</td>
+                                        <td>{{piecesHistory.memo}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    function indexCtrl($scope, $http, $location) {
+        $("#referenceNo").focus();
+
+        $scope.queryPieces = function() {
+            $scope.piecesResultVo = {};
+            $scope.isNothing = false;
+            var reqData = {};
+            reqData.referenceNo = $scope.referenceNo;
+            var params = {};
+            params.reqData = reqData;
+            $http.post("/tms-webapp/Server/PiecesService/queryPiecesInfo.json", params, {timeout:30000})
+                    .success(function(data){
+                        $scope.piecesResultVo = data.result;
+                        if(!$scope.piecesResultVo.referenceNo) {
+                            $scope.isNothing = true;
+                        }
+                    })
+                    .error(function(data){console.log(data);});
+        };
+
+        var url = $location.absUrl();
+        if(url.indexOf("referenceNo") > 0) {
+            $scope.referenceNo = url.substring(url.indexOf("referenceNo") + 12, url.length);
+            if($scope.referenceNo != "undefined" && $scope.referenceNo != null && $scope.referenceNo != '') {
+                $scope.queryPieces();
+            }
+        }
+    }
+</script>
+</html>

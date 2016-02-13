@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- CSS -->
+    <link href="js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <!--<link href="js/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>-->
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+
+    <!-- JS -->
+    <script type="text/javascript" src="js/lib/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-controller="indexCtrl">
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" class="img-responsive" alt="" /></a>
+            </div>
+            <div class="header-right">
+                <h4><i class="phone"></i>(256) 152 3658</h4>
+                <span class="menu"></span>
+                <div class="top-menu">
+                    <ul>
+                        <li><a class="active" href="index.html">首页</a></li>
+                        <li><a href="track.html">包裹追踪</a></li>
+                    </ul>
+                </div>
+                <!-- script for menu -->
+                <script>
+                    $( "span.menu" ).click(function() {
+                        $( ".top-menu" ).slideToggle( "slow", function() {
+                            // Animation complete.
+                        });
+                    });
+                </script>
+                <!-- script for menu -->
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="banner">
+        <div class="container">
+            <div class="banner-info">
+                <h2>欢迎</h2>
+                <p>输入关联号码即可进行包裹的查询</p>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入关联号码" ng-model="referenceNo" id="referenceNo">
+                </div>
+                <a href="track.html?referenceNo={{referenceNo}}" class="btn btn-1 btn-1d">包裹追踪</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer text-center">
+        <div class="social-icons">
+            <!--<a href="#"><i class="facebook"></i></a>-->
+            <!--<a href="#"><i class="twitter"></i></a>-->
+            <!--<a href="#"><i class="googlepluse"></i></a>-->
+            <!--<a href="#"><i class="youtube"></i></a>-->
+            <!--<a href="#"><i class="linkedin"></i></a>-->
+        </div>
+        <div class="copyright">
+            <p>&copy; 2016 PaletteB. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    function indexCtrl($scope, $http) {
+        $("#referenceNo").focus();
+    }
+</script>
+</html>
