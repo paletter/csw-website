@@ -58,6 +58,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-8 contact_left" ng-show="isSearch">
+                        <div class="contact_grid contact_address">
+                            <h5>查询中，请稍后...</h5>
+                        </div>
+                    </div>
+
                     <div class="col-md-8 contact_left" ng-show="isNothing">
                         <div class="contact_grid contact_address">
                             <h5>很抱歉，没有查到相关信息</h5>
@@ -98,22 +104,27 @@
 <script type="text/javascript">
     function indexCtrl($scope, $http, $location) {
         $("#referenceNo").focus();
+        $scope.isSearch = false;
 
         $scope.queryPieces = function() {
             $scope.piecesResultVo = {};
+            $scope.isSearch = true;
             $scope.isNothing = false;
             var reqData = {};
             reqData.referenceNo = $scope.referenceNo;
             var params = {};
             params.reqData = reqData;
             $http.post("/tms-webapp/Server/PiecesService/queryPiecesInfo.json", params, {timeout:30000})
-                    .success(function(data){
-                        $scope.piecesResultVo = data.result;
-                        if(!$scope.piecesResultVo.referenceNo) {
-                            $scope.isNothing = true;
-                        }
-                    })
-                    .error(function(data){console.log(data);});
+                .success(function(data){
+
+                    $scope.isSearch = false;
+
+                    $scope.piecesResultVo = data.result;
+                    if(!$scope.piecesResultVo.referenceNo) {
+                        $scope.isNothing = true;
+                    }
+                })
+                .error(function(data){console.log(data);$scope.isSearch = false;});
         };
 
         var url = $location.absUrl();
